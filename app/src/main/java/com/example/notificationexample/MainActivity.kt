@@ -15,58 +15,55 @@ import com.example.notificationexample.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private val CHANNEL_ID: String = "channel_id_example_01"
-    private val notificationId = 101
-    private var _binding:ActivityMainBinding?=null
-    private val binding get() =  _binding!!
-
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var notificationManagerCompat: NotificationManagerCompat
+    private val app = App()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        notificationManagerCompat = NotificationManagerCompat.from(this)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         val root = binding.root
         setContentView(root)
-        createNotificationChannel()
-        binding.btnNotification.setOnClickListener{
-            sendNotification()
+        binding.ed1
+
+        binding.ed2
+
+
+        binding.btnNotification.setOnClickListener {
+            sendOnChannel1()
+        }
+        binding.btnNotification10.setOnClickListener {
+            sendOnChannel2()
+
         }
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Notification Title"
-            val descriptionText = "Notification Description"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-
+    private fun sendOnChannel2() {
+        val title: String = binding.ed1.text.toString()
+        val message: String = binding.ed2.text.toString()
+        val notificaiton = NotificationCompat.Builder(this, app.channel_2_id)
+            .setSmallIcon(R.drawable.ic_2)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .build()
+        notificationManagerCompat.notify(1, notificaiton)
     }
 
-    private fun sendNotification() {
-        val intent = Intent(this,MainActivity::class.java) .apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent:PendingIntent = PendingIntent.getActivity(this,0,intent,0)
-
-        val bitmap =  BitmapFactory.decodeResource(applicationContext.resources,R.drawable.img)
-        val bitmapLargeIcon =  BitmapFactory.decodeResource(applicationContext.resources,R.drawable.ic_launcher_foreground)
-
-
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Example title")
-            .setContentText("Example Description")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setLargeIcon(bitmapLargeIcon)
-            .setStyle(NotificationCompat.BigPictureStyle().bigPicture(bitmap))
-            .setContentIntent(pendingIntent)
-
-        with(NotificationManagerCompat.from(this)){
-            notify(notificationId,builder.build())
-        }
+    private fun sendOnChannel1() {
+        val title: String = binding.ed1.text.toString()
+        val message: String = binding.ed2.text.toString()
+        val notificaiton = NotificationCompat.Builder(this, app.channel_1_id)
+            .setSmallIcon(R.drawable.ic_1)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .build()
+        notificationManagerCompat.notify(2, notificaiton)
     }
+
+
 }
